@@ -1,0 +1,13 @@
+<h1>Comprobantes</h1>
+
+
+
+<button (click)="Actualizar()">Actualizar</button>
+<button (click)="GenerarPDF()">Generar</button>
+
+<div class="pdf-container">
+    <pdf-viewer [src]="src"
+    [zoom]="1"
+    ></pdf-viewer>
+</div>
+
