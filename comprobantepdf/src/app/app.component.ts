@@ -10,23 +10,41 @@ export class AppComponent implements OnInit {
   title = 'comprobantepdf';
   src: any;
   documento = new jsPDF({ format: 'a4' });
-
+  rotation: number = 0;
 
   
-
   Actualizar(){
     const doc = this.documento;
+    const pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+    console.log(pageHeight + ',' + pageWidth);
 
-    const pageHeight =
-    doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
-  const pageWidth =
-    doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-  console.log(pageHeight + ',' + pageWidth);
+
+    const venta: any = {
+      id: 1,      
+      letra: 'B',
+      ptovta: 2,
+      nrocom: 3,
+      nombrecliente: 'Marcelo Negroni',
+      descripcion: "bien1",
+      cantidad: 1,
+      preciounit: 0,
+      subtotal: 0,
+      iva: 0,
+      aliiva: 21,
+      ventaId: 21,
+      bienId: "1",
+      bien: {
+          id: "1",
+          nombre: "Papas",
+          precioiva: 100,
+          stock: 0
+      }
+  };
 
   // // page 1
 
 // ENCABEZADO Y MARCO 
-
 
 doc.setFont('helvetica', 'bold');
 doc.setFontSize (6);
@@ -41,17 +59,16 @@ doc.line (pageWidth - 10, 5, pageWidth - 10, 250) ;
 doc.line (100, 19, 100, 45);
 doc.rect (90, 9, 20, 10);
 
-
-
 // DATOS VENDEDOR
-
 
 doc.setFont('helvetica', 'bold');
 doc.setFontSize(13);
 doc.text ('Marcelo Nigro', 35, 16);
 doc.text ('Factura', 145, 16);
 doc.setFontSize(14);
-doc.text ('C',  100, 14.5, { align: 'center' });
+//`VentaId:${venta.id}`
+//doc.text ('C',  100, 14.5, { align: 'center' });
+doc.text (venta.letra,  100, 14.5, { align: 'center' });
 doc.setFontSize(6);
 doc.text ('CÓD. 11', 100, 18, { align: 'center' });
 doc.setFontSize(9);
@@ -67,10 +84,7 @@ doc.text ('Domicilio', 47, 29);
 doc.text ('Responsable / Monotributo', 47, 34);
 doc.text ('353-0000000', 47, 39);
 
-
-
 // PARTE FACTURA
-
 
 doc.text ('Pto.Vta.'     , 132, 24);
 doc.text ('Comp', 162, 24);
@@ -79,7 +93,8 @@ doc.text ('CUIT', 102, 34)
 doc.text ('II BB', 102, 39);
 doc.text ('Inicio Act.', 102, 44);
 
-doc.text ('0004'     , 150, 24);
+doc.text ('0004', 150, 24);
+//{{ numberValue | number:'3.0-0' }}
 doc.text ('000000003', 175, 24);
 doc.text ('16/02/2023', 132, 29);
 doc.text ('20-20749874-3', 132, 34)
@@ -87,8 +102,6 @@ doc.text ('280203947', 132, 39);
 doc.text ('01/01/2000', 132, 44);
 
 doc.line (10, 45, pageWidth - 10, 45);
-
-
 
 // datos del cliente
 
@@ -99,7 +112,7 @@ doc.text ('Nro Doc.', 135, 50);
 doc.text ('Sit. IVA',135, 55);
 doc.text ('Cond. Vta.', 135, 60);
 
-doc.text ('0001 - Consumidor Final', 37, 50);
+doc.text ('0001 - Consumidor Final:', 37, 50);
 doc.text ('Domicilio', 37, 55);
 doc.text ('JAMES CRAIK', 37, 60);
 doc.text ('00000000', 155, 50);
@@ -107,7 +120,6 @@ doc.text ('IVA Consumidor Final',155, 55);
 doc.text ('Contado', 155, 60);
 
 doc.line (10, 62.5, pageWidth - 10, 62.5);
-
 
 // ENCABEZADO VENTA
 
@@ -149,23 +161,7 @@ doc.text ('10.00',149, 82, { align: 'right' });
 doc.text ('2000.00',169, 82, { align: 'right' });
 doc.text ('20000.00',199, 82, { align: 'right' });
 
-
-/* INTENTO DE TABLA
-
-doc.setFillColor(255,255,255);
-doc.setDrawColor(0);
-doc.setLineWidth(0);
-
-var data = [['Nombre', 'Años', 'País'],
-            ['John Doe', 25, 'USA'], 
-            ['Jane Doe', 24, 'Canada']];
-doc.table (10,10, data, 200, 100);
-*/
-
-
-
 // PIE DE PAGINA
-
 
 doc.setFont('helvetica', 'normal');
 doc.setFontSize(8);
@@ -191,75 +187,117 @@ doc.addImage("https://previews.123rf.com/images/vinntom/vinntom1202/vinntom12020
 
 
 
-/*   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text('Prueba DAERAH AIR MINUM', pageWidth / 2, 16, {
-    align: 'center',
-  });
-  doc.setFontSize(16);
-  doc.text('TIRTA MAHAKAM', pageWidth / 2, 22, { align: 'center' });
-  doc.setFontSize(14);
-  doc.setLineWidth(0.5);
-  doc.line(10, 5, pageWidth - 10, 5);
-  doc.line(10, 35, pageWidth - 10, 35);
-  doc.line(10, 250, pageWidth - 10, 250);
-  doc.line(10, 5, 10, 250);
-  doc.line(pageWidth - 10, 5, pageWidth - 10, 250);
+doc.addPage ("a4", "landscape");
 
-  doc.setFontSize(12);
-  doc.text('SURAT PERNYATAAN PEMASANGAN', pageWidth / 2, 55, {
-    align: 'center',
-  });
-  doc.setLineWidth(0.2);
-  doc.line(66, 56, pageWidth - 66, 56);
+doc.setFont('helvetica', 'bold');
+doc.setLineWidth(0.5);
+doc.line (10,5, 285, 5);
+doc.line (10,200, 285, 200);
+doc.line (10,5, pageWidth - 200, 200);
+doc.line (285, 5, 285, 200) ;
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
+var x = 10;
+var y = 10;
 
-  doc.text('Yang bertanda tangan di bawah ini:', 20, 75);
-  doc.text('Atas Nama', 30, 85);
-  doc.text(':', 70, 85);
-  doc.text('Alamat', 30, 90);
-  doc.text(':', 70, 90);
-  doc.text('No. Sambungan', 30, 95);
-  doc.text(':', 70, 95);
+// ENCABEZADO Y MARCO 
 
-  let text2 = doc.splitTextToSize(
-    'Menyatakan dengan sebenarnya bahwa sambungan air minum di tempat saya telah selesai dipasang dan ' +
-      'mengalir dengan lancar dan memuaskan, pada:',
-    pageWidth - 45
-  );
-  doc.text(text2, 20, 105);
+doc.setFont('helvetica', 'bold');
+doc.setFontSize (8);
+doc.text('Empresa', 12, 15);
+doc.text('Mario Nigro', 33, 15);
+doc.text('Fecha Desde 01/01/23', 114, 28);
+doc.text('Fecha Hasta 08/08/23', 144, 28);
+doc.setFontSize (12);
+doc.text('Libro IVA Ventas', 142.5, 22, { align: 'center'});
 
-  doc.text('Hari :', 20, 120);
-  doc.text('Jam :', 20, 125);
-  doc.text('Tanggal :', 70, 120);
+// DESCRIPCION
 
-  doc.text('Demikian pernyataan ini saya buat dengan sebenarnya.', 20, 135);
+doc.setFontSize (8);
+doc.text('Nª Comprob.', 12, 38);
+doc.text('Fecha', 33, 38);
+doc.text('Cliente.', 50, 38);
+doc.text('Sit. IVA', 97, 38);
+doc.text('CUIT', 120, 38);
+doc.text('Gravado', 155, 38, { align: 'right'} );
+doc.text('Exento', 165, 38);
+doc.text('IVA 10.5', 190, 38, { align: 'right'} ) ; 
+doc.text('IVA 21', 210, 38, { align: 'right'} );
+doc.text('IVA 27', 230, 38, { align: 'right'} );
+doc.text('Total', 250, 38, { align: 'right'} );
+doc.text('Provincia', 254, 38);
 
-  doc.text('CV. ..........................', pageWidth / 2 - 50, 160, {
-    align: 'center',
-  });
-  doc.text('Tenggarong, 20 Juni 2019', pageWidth / 2 + 50, 160, {
-    align: 'center',
-  });
-  doc.text('Pelaksana: ', pageWidth / 2 - 50, 155, { align: 'center' });
-  doc.text('Yang menyatakan,', pageWidth / 2 + 50, 150, { align: 'center' });
-  doc.line(pageWidth / 2 + 35, 186, pageWidth / 2 + 65, 186);
-  doc.text('Pelanggan', pageWidth / 2 + 50, 190, { align: 'center' });
-  doc.line(pageWidth / 2 - 35, 186, pageWidth / 2 - 65, 186);
-  doc.line(90, 231, pageWidth - 90, 231);
-  doc.text('Direktur', pageWidth / 2 - 50, 190, { align: 'center' });
-  doc.text('Pengawas', pageWidth / 2, 200, { align: 'center' });
-  doc.text('Kepala Cabang Tenggarong', pageWidth / 2, 205, {
-    align: 'center',
-  });
-  doc.text('NIK. 000 000 000', pageWidth / 2, 235, { align: 'center' });
+// CUERPO
 
-  doc.setFont('helvetica', 'bold');
-  doc.text('PELANGGAN', pageWidth / 2 + 50, 185, { align: 'center' });
-  doc.text('PURWANTO', pageWidth / 2, 230, { align: 'center' }); */
+doc.setFontSize (7);
+doc.text('FCC-04-00001', 12, 43);
+doc.text('16/02/2023', 33, 43);
+doc.text('Juan Manuel El Ninin Ocampo', 50, 43);
+doc.text('Cons. Final', 97, 43);
+doc.text('00-00000000-0', 120, 43);
+doc.text('0.83', 155, 43, { align: 'right'});
+doc.text('-', 165, 43);
+doc.text('-', 190, 43, { align: 'right'});
+doc.text('0.17', 210, 43, { align: 'right'});
+doc.text('-', 230, 43, { align: 'right'});
+doc.text('1.00', 250, 43, { align: 'right'});
+doc.text('CBA', 254, 43);
 
+doc.text('FCC-04-00002', 12, 48);
+doc.text('16/02/2023', 33, 48);
+doc.text('Juan Manuel El Ninin Ocampo', 50, 48);
+doc.text('Responsable Insc.', 97, 48);
+doc.text('00-00000000-0', 120, 48);
+doc.text('200.00', 155, 48, { align: 'right'});
+doc.text('-', 165, 48);
+doc.text('-', 190, 48, { align: 'right'});
+doc.text('42.00', 210, 48, { align: 'right'});
+doc.text('-', 230, 48, { align: 'right'});
+doc.text('242.00', 250, 48, { align: 'right'});
+doc.text('TIERRA DEL FUEGO', 254, 48);
+
+doc.text('FCC-04-00003', 12, 53);
+doc.text('16/02/2023', 33, 53);
+doc.text('Juan Manuel El Ninin Ocampo', 50, 53);
+doc.text('Monotibutista', 97, 53);
+doc.text('00-00000000-0', 120, 53);
+doc.text('10000.00', 155, 53, { align: 'right'});
+doc.text('-', 165, 53);
+doc.text('-', 190, 53, { align: 'right'});
+doc.text('2100.00', 210, 53, { align: 'right'});
+doc.text('-', 230, 53, { align: 'right'});
+doc.text('12100.00', 250, 53, { align: 'right'});
+doc.text('SANTIAGO DEL ESTERO', 254, 53);
+
+// FINAL
+
+doc.setFontSize (9);
+doc.text('TOTALES', 12, 68);
+doc.setFontSize (7);
+doc.text('Gravado', 12, 73);
+doc.text('No Gravado', 12, 78);
+doc.text('IVA 21 %', 97, 73);
+doc.text('IVA 10.5 %', 97, 78);
+doc.text('Total', 200, 73);
+
+doc.setFontSize (8);
+doc.text('10200.83', 65, 73, { align: 'right'} );
+doc.text('0.00', 65, 78, { align: 'right'} );
+doc.text('2142.17', 155, 73, { align: 'right'} );
+doc.text('0.00', 155, 78, { align: 'right'} );
+doc.text('12343.00', 230, 73, { align: 'right'} );
+
+
+/*
+// MARCO 
+
+doc.text('Original', 100, 8, { align: 'center' });
+doc.setLineWidth(0.5);
+doc.line (10,5, pageWidth - 10, 5);
+doc.line (10,9, pageWidth - 10, 9);
+doc.line (10,250, pageWidth - 10, 250);
+doc.line (10,5, pageWidth - 200, 250);
+doc.line (pageWidth - 10, 5, pageWidth - 10, 250) ;
+*/
 
   // generate
   let pdf = doc.output('datauristring', { filename: 'RAB' });
@@ -280,7 +318,6 @@ doc.addImage("https://previews.123rf.com/images/vinntom/vinntom1202/vinntom12020
       return bytes.buffer;
     }
 
-
     GenerarPDF(){
         this.documento.save("comprobante.pdf");
     }
@@ -288,8 +325,5 @@ doc.addImage("https://previews.123rf.com/images/vinntom/vinntom1202/vinntom12020
     ngOnInit() {
       this.Actualizar();
     }
-
-
-
 
 }
